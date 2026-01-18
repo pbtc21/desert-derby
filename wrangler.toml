@@ -1,0 +1,11 @@
+name = "desert-derby"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+workers_dev = true
+
+[vars]
+PAYMENT_ADDRESS = "SPP5ZMH9NQDFD2K5CEQZ6P02AP8YPWMQ75TJW20M"
+
+[[kv_namespaces]]
+binding = "GAMES"
+id = "bc4f46980a494061814117787076a5f0"
