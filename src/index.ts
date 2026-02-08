@@ -862,6 +862,38 @@ app.get('/game/state', async (c) => {
   return c.json(game);
 });
 
+// x402 discovery for join
+app.get('/game/join', (c) => {
+  const paymentAddress = c.env.PAYMENT_ADDRESS || "SPKH9AWG0ENZ87J1X0PBD4HETP22G8W22AFNVF8K";
+  return c.json({
+    x402Version: 1,
+    name: "Desert Derby - Join Game",
+    image: "https://desert-derby.p-d07.workers.dev/derby-icon.png",
+    accepts: [{
+      scheme: "exact",
+      network: "stacks",
+      maxAmountRequired: String(JOIN_COST_SATS),
+      resource: "/game/join",
+      description: "Join Desert Derby with a classic vehicle (1969 Commando, 1946 CJ2A, or 1973 F100)",
+      mimeType: "application/json",
+      payTo: paymentAddress,
+      maxTimeoutSeconds: 300,
+      asset: "sBTC",
+      outputSchema: {
+        input: { type: "http", method: "POST", bodyType: "json" },
+        output: {
+          type: "object",
+          properties: {
+            success: { type: "boolean" },
+            vehicleId: { type: "string" },
+            playerName: { type: "string" }
+          }
+        }
+      }
+    }]
+  });
+});
+
 // Join game
 app.post('/game/join', async (c) => {
   const paymentTxid = c.req.header('X-Payment');
@@ -917,6 +949,31 @@ app.post('/game/join', async (c) => {
     vehicle,
     gameId: game.id,
     playersInGame: game.vehicles.length,
+  });
+});
+
+// x402 discovery for move
+app.get('/game/move', (c) => {
+  const paymentAddress = c.env.PAYMENT_ADDRESS || "SPKH9AWG0ENZ87J1X0PBD4HETP22G8W22AFNVF8K";
+  return c.json({
+    x402Version: 1,
+    name: "Desert Derby - Move Vehicle",
+    image: "https://desert-derby.p-d07.workers.dev/derby-icon.png",
+    accepts: [{
+      scheme: "exact",
+      network: "stacks",
+      maxAmountRequired: String(MOVE_COST_SATS),
+      resource: "/game/move",
+      description: "Move your vehicle in the desert arena (up/down/left/right)",
+      mimeType: "application/json",
+      payTo: paymentAddress,
+      maxTimeoutSeconds: 30,
+      asset: "sBTC",
+      outputSchema: {
+        input: { type: "http", method: "POST", bodyType: "json" },
+        output: { type: "object", properties: { success: { type: "boolean" } } }
+      }
+    }]
   });
 });
 
@@ -1040,6 +1097,31 @@ app.post('/game/move', async (c) => {
     },
     gameStatus: game.status,
     winner: game.winner,
+  });
+});
+
+// x402 discovery for boost
+app.get('/game/boost', (c) => {
+  const paymentAddress = c.env.PAYMENT_ADDRESS || "SPKH9AWG0ENZ87J1X0PBD4HETP22G8W22AFNVF8K";
+  return c.json({
+    x402Version: 1,
+    name: "Desert Derby - Speed Boost",
+    image: "https://desert-derby.p-d07.workers.dev/derby-icon.png",
+    accepts: [{
+      scheme: "exact",
+      network: "stacks",
+      maxAmountRequired: String(BOOST_COST_SATS),
+      resource: "/game/boost",
+      description: "Activate turbo boost for temporary speed increase",
+      mimeType: "application/json",
+      payTo: paymentAddress,
+      maxTimeoutSeconds: 30,
+      asset: "sBTC",
+      outputSchema: {
+        input: { type: "http", method: "POST", bodyType: "json" },
+        output: { type: "object", properties: { success: { type: "boolean" }, boosted: { type: "boolean" } } }
+      }
+    }]
   });
 });
 
